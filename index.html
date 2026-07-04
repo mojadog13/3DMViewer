@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>MMD Web Viewer</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #eceef1;
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  #app {
+    position: fixed;
+    inset: 0;
+    touch-action: none;
+  }
+  #ui {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 10px;
+    z-index: 10;
+  }
+  .btn {
+    appearance: none;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #333;
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn.active {
+    background: rgba(59, 130, 246, 0.9);
+    border-color: rgba(59, 130, 246, 0.9);
+    color: #fff;
+  }
+  .btn.disabled, .btn:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  #status {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 86vw;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    z-index: 20;
+    display: none;
+    text-align: center;
+  }
+</style>
+<!--
+  three.js のバージョンは 0.170.0 に固定すること。
+  MMDLoader / MMDAnimationHelper は r172 で three/addons から削除されるため、
+  r171 以下でないと動かない（r170 では非推奨警告が出るが動作する）。
+  バージョンを変える場合は下の importmap と ammo.wasm.js の <script src>、
+  src/main.js の AMMO_CDN_DIR の3箇所を揃えて変えること。
+-->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app"></div>
+
+<div id="ui">
+  <label class="btn" id="model-btn">モデル<input id="model-input" type="file" multiple hidden></label>
+  <label class="btn" id="folder-btn">フォルダ<input id="folder-input" type="file" webkitdirectory hidden></label>
+  <label class="btn" id="motion-btn">モーション<input id="motion-input" type="file" multiple hidden></label>
+  <button class="btn" id="play-btn" disabled>一時停止</button>
+  <button class="btn" id="gyro-btn">姿勢カメラ</button>
+  <button class="btn active" id="physics-btn">物理</button>
+</div>
+
+<div id="status"></div>
+
+<!-- ammo.js（MMD物理演算用）。three と同じバージョンの CDN から読み込む -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/ammo.wasm.js"></script>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
