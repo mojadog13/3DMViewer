@@ -30,4 +30,7 @@ jobs:
 
       - uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Claude Pro/Max サブスクリプションの OAuth トークンで認証する。
+          # ローカルで `claude setup-token` を実行して生成したトークンを
+          # リポジトリの Secrets に CLAUDE_CODE_OAUTH_TOKEN として登録すること。
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
